@@ -1,0 +1,7 @@
+sudo apt-get install ffmpeg zlib* libjpeg* python3-setuptools
+pip3 install --user gif-for-cli
+
+14033135
+
+gif-for-cli --display-mode=nocolor 14033135
+gif-for-cli --rows 10 --cols 100 -l 0 14033135

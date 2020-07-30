@@ -1,0 +1,4 @@
+colorama
+terminaltables
+scapy
+pandas
