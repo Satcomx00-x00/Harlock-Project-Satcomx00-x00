@@ -8,13 +8,14 @@ import os
 import re
 import sys
 from colorama import Fore, Back, Style
-import terminaltables
+from prettytable import PrettyTable
 from socket import *
 import random
 from scapy.all import *
 import pandas
 from gif_for_cli.execute import execute
-from terminaltables import AsciiTable
+from prettytable import PrettyTable
+print("Init Brutforce Features file..."+Fore.GREEN+"ok")
 
 class ssh_brutforce(object):
     """docstring for ssh_brutforce."""

@@ -7,6 +7,8 @@ from datetime import datetime, date
 import os
 import re
 import sys
+from colorama import Fore, Back, Style
+print("Init Network Features file..."+Fore.GREEN+"ok")
 
 class DOS(object):
     """docstring for DOS."""
@@ -128,6 +130,7 @@ class keep_alive_threader(object):
 
         q.join()
         print('Time taken:', time.time() - startTime)
+
 class portscanner(object):
     """docstring for portscanner."""
 

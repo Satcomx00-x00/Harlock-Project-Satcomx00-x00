@@ -9,21 +9,27 @@ import os
 import re
 import sys
 from colorama import Fore, Back, Style
-import terminaltables
+import colorama
+# from prettytable import PrettyTable
 from socket import *
 import random
 from scapy.all import *
 from threading import Thread
 import pandas
 from gif_for_cli.execute import execute
-from terminaltables import AsciiTable
 import argparse
 from subprocess import run, PIPE
 
-from network import *
-from wifi_features import *
-from bruteforcers import *
 
+#####COLORAMA PARMS
+colorama.init(autoreset=True)
+# ---------only after debug----------
+# hide some errors from shell
+class DevNull:
+    def write(self, msg):
+        pass
+sys.stderr = DevNull()
+######ARGUMENTS GEN
 desc = 'Harlock Project is an Open Source and Python based program for pentesters to auditing network infrastructures.'
 parser = argparse.ArgumentParser(prog="Harlock", usage='%(prog)s [options]', description=desc)
 parser.add_argument("-V", "--version", help="show program version", action="store_true")
@@ -35,85 +41,42 @@ if args.version:
     print("Harlock Project version 0.1")
 if args.nosplash:
     os.system('cls' if os.name == 'nt' else 'clear')
+    print("\nInitializinf Arcadia Asrenal \n\n\n ")
+    from network import *
+    time.sleep(0.1)
+    from wifi_features import *
+    time.sleep(0.1)
+    from bruteforcers import *
+    time.sleep(1.5)
 else:
     os.system("clear && python3 -m gif_for_cli --rows 25 --cols 50 gifs/albator.gif")
+    os.system('cls' if os.name == 'nt' else 'clear')
+    print("\nInitializinf Arcadia Asrenal \n\n\n ")
+    from network import *
+    time.sleep(0.1)
+    from wifi_features import *
+    time.sleep(0.1)
+    from bruteforcers import *
+    time.sleep(1.5)
 # currentdate = date.today()
 # currentdate = currentdate.strftime('%d:%m:%y ')
 # current = datetime.now()
 # current_time = current.strftime("%H:%M:%S")
-
 def template():
     os.system('cls' if os.name == 'nt' else 'clear')
-    print("""
+    print(Style.BRIGHT+Fore.GREEN+"""
     __  __           __           __      ____               _           __
    / / / /___ ______/ /___  _____/ /__   / __ \_________    (_)__  _____/ /_
   / /_/ / __ `/ ___/ / __ \/ ___/ //_/  / /_/ / ___/ __ \  / / _ \/ ___/ __/
  / __  / /_/ / /  / / /_/ / /__/ ,<    / ____/ /  / /_/ / / /  __/ /__/ /_
 /_/ /_/\__,_/_/  /_/\____/\___/_/|_|  /_/   /_/   \____/_/ /\___/\___/\__/
                                                       /___/
-
+      A Satcom Script for Pentesting
     """)
     pass
 
-def wifi_scanner():
-    # initialize the networks dataframe that will contain all access points nearby
-    networks = pandas.DataFrame(columns=["BSSID", "SSID", "dBm_Signal", "Channel", "Crypto"])
-    # set the index BSSID (MAC address of the AP)
-    networks.set_index("BSSID", inplace=True)
-
-    def callback(packet):
-        if packet.haslayer(Dot11Beacon):
-            # extract the MAC address of the network
-            bssid = packet[Dot11].addr2
-            # get the name of it
-            ssid = packet[Dot11Elt].info.decode()
-            try:
-                dbm_signal = packet.dBm_AntSignal
-            except:
-                dbm_signal = "N/A"
-            # extract network stats
-            stats = packet[Dot11Beacon].network_stats()
-            # get the channel of the AP
-            channel = stats.get("channel")
-            # get the crypto
-            crypto = stats.get("crypto")
-            networks.loc[bssid] = (ssid, dbm_signal, channel, crypto)
-
-
-    def print_all():
-        while True:
-            os.system("clear")
-            print(networks)
-            time.sleep(0.5)
-
-
-    def change_channel():
-        ch = 1
-        while True:
-            os.system(f"iwconfig {interface} channel {ch}")
-            # switch channel from 1 to 14 each 0.5s
-            ch = ch % 14 + 1
-            time.sleep(0.5)
-
-
-    if __name__ == "__main__":
-        # interface name, check using iwconfig
-
-        # start the thread that prints all the networks
-        printer = Thread(target=print_all)
-        printer.daemon = True
-        printer.start()
-        # start the channel changer
-        channel_changer = Thread(target=change_channel)
-        channel_changer.daemon = True
-        channel_changer.start()
-        # start sniffing
-        sniff(prn=callback, iface=interface)
-        raw= input()
-
-
-
-
+def install_dependencies():
+    os.system("xterm -e 'systemctl start postgresql && msfdb init && msfconsole -x db_status'")
 
 if __name__ == '__main__':
     def menu():
@@ -121,38 +84,66 @@ if __name__ == '__main__':
         #time.sleep(1)
         print()
 
-        choice = input("""
-                          1: Update OS
-                          2: Starting Arcadia Protocol (Spec Recon)
-                          3: Network Blaster
-                          4: Wifi Arsenal
-                          5: Bruteforcer
-                          00: Quit/Log Out
+        choice = input(Style.BRIGHT+Fore.YELLOW+"""
+              1: Update OS
+              2: Starting 'The Galaxy Railways' Protocol
+              3: 'Death Shadow' Network Blaster
+              4: Wifi Arsenal
+              5: Bruteforcers
+              00: Quit/Log Out
 
-                          Please enter your choice: """)
+      Please enter your choice: """)
 
         if choice =="1":
             template()
             os.system("xterm -e 'sudo apt update && sudo apt upgrade -f && sudo apt install ffmpeg zlib* libjpeg* python3-setuptools'")
+            pass
         elif choice =="2":
             print("actually nothing")
         elif choice =="3":
-            print("test")
+            template()
+            choice = input("""
+              1: Port Scanner
+
+              b: back
+              00: Quit/Log Out
+
+              Please enter your choice: """)
+
+            if choice =="1":
+                template()
+                target = input("Target IP/Range: ")
+                portscanner()
+            elif choice =="2":
+                pass
+            elif choice == "3":
+                pass
+            elif choice == "b":
+                menu()
+            elif choice == "00":
+                sys.exit
+
         elif choice=="4":
             template()
             choice = input("""
-                              1: Wifi Scanner
-                              2: Wifi Deauther
+              1: Wifi Scanner
+              2: Wifi Deauther
 
-                              b: back
-                              00: Quit/Log Out
+              b: back
+              00: Quit/Log Out
 
-                              Please enter your choice: """)
+              Please enter your choice: """)
 
             if choice =="1":
-                wifi_scanner()
+                Wifi_scanner()
             elif choice =="2":
-                wifi_deauther()
+                template()
+                interface =input("Interface: ")
+                mactarget =input("Target Mac Address: ")
+                packets =input("Packet(default: 999): ")
+                Wifi_deauther(interface, mactarget, packets)
+            elif choice == "3":
+                pass
             elif choice == "b":
                 menu()
             elif choice == "00":
@@ -160,13 +151,13 @@ if __name__ == '__main__':
 
         elif choice=="5":
             choice = input("""
-                              1: SSH Bruteforcer
-                              2: FTP Bruteforcer
+              1: SSH Bruteforcer
+              2: FTP Bruteforcer
 
-                              b: back
-                              00: Quit/Log Out
+              b: back
+              00: Quit/Log Out
 
-                              Please enter your choice: """)
+              Please enter your choice: """)
 
             if choice =="1":
                 ssh_bruteforcer()
@@ -186,7 +177,7 @@ if __name__ == '__main__':
     menu()
 
 ####CODE template
-# from terminaltables import AsciiTable
+# from from prettytable import PrettyTable import AsciiTable
 # table_data = [
 #     ['Heading1', 'Heading2'],
 #     ['row1 column1', 'row1 column2'],
